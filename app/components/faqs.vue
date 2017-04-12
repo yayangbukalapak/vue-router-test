@@ -1,7 +1,7 @@
 <template src="views/faqs.html"></template>
 
 <script>
-    import Vue from 'vue';
+    import axios from 'axios';
     export default {
         data () {
             return {
@@ -9,21 +9,23 @@
             }
         },
         beforeRouteEnter (to, from, next) {
-            Vue.http.get("/config/data/faqs.json").then(response => {
-                next(vm => {
-                    vm.faqs = response.body;
+            axios.get("/config/data/faqs.json")
+                .then(response => {
+                    next(vm => {
+                        vm.faqs = response.data;
+                    })
                 })
-            }, response => {
-                next(false)
-            })
+                .catch(response => {
+                    next(false)
+                });
         },
         watch: {
             '$route' : 'fetchData'
         },
         methods: {
             fetchData () {
-                Vue.http.get("/config/data/faqs.json").then(response => {
-                    this.faqs = response.body;
+                axios.get("/config/data/faqs.json").then(response => {
+                    this.faqs = response;
                 }, response => {
                     console.log("error", response);
                 })
